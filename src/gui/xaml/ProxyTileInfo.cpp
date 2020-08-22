@@ -33,6 +33,7 @@ ProxyTileInfo::ProxyTileInfo( QObject* parent ) :
 	connect( EventConnector::getInstance().aggregatorTileInfo(), &AggregatorTileInfo::signalUpdateTileInfo, this, &ProxyTileInfo::onUpdateTileInfo, Qt::QueuedConnection );
 	connect( this, &ProxyTileInfo::signalTerrainCommand, &EventConnector::getInstance(), &EventConnector::onTerrainCommand, Qt::QueuedConnection );
 	connect( this, &ProxyTileInfo::signalManageCommand, &EventConnector::getInstance(), &EventConnector::onManageCommand, Qt::QueuedConnection );
+	connect( this, &ProxyTileInfo::signalJobCommand, &EventConnector::getInstance(), &EventConnector::onJobCommand, Qt::QueuedConnection );
 	connect( this, &ProxyTileInfo::signalRequestStockpileItems, EventConnector::getInstance().aggregatorTileInfo(), &AggregatorTileInfo::onRequestStockpileItems, Qt::QueuedConnection );
 
 	connect( this, &ProxyTileInfo::signalSetTennant, EventConnector::getInstance().aggregatorTileInfo(), &AggregatorTileInfo::onSetTennant, Qt::QueuedConnection );
@@ -65,6 +66,11 @@ void ProxyTileInfo::sendTerrainCommand( unsigned int tileID, QString cmd )
 void ProxyTileInfo::sendManageCommand( unsigned int tileID )
 {
 	emit signalManageCommand( tileID );
+}
+
+void ProxyTileInfo::sendJobCommand( unsigned int jobID )
+{
+	emit signalJobCommand( jobID );
 }
 
 void ProxyTileInfo::requestStockpileItems( unsigned int tileID )

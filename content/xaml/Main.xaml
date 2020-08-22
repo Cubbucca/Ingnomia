@@ -30,12 +30,12 @@
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="1*"/>
 		</Grid.ColumnDefinitions>
-		<Viewbox Visibility="{Binding ShowMainMenu}">
+        <Viewbox Visibility="{Binding ShowMainMenu}">
             <local:MainMenu x:Name="MainMenu" Grid.Row="1" Grid.Column="1" Width="{Binding RelativeSource={RelativeSource FindAncestor, 
 AncestorType=UserControl}, Path=DataContext.WindowWidth}" Height="{Binding RelativeSource={RelativeSource FindAncestor, 
 AncestorType=UserControl}, Path=DataContext.WindowHeight}"/>
 		</Viewbox>
-		<Viewbox Visibility="{Binding ShowGameGUI}">
+        <Viewbox Visibility="{Binding ShowGameGUI}">
             <local:GameGui x:Name="GameGui" Grid.Row="1" Grid.Column="1" Width="{Binding RelativeSource={RelativeSource FindAncestor, 
 AncestorType=UserControl}, Path=DataContext.WindowWidth}" Height="{Binding RelativeSource={RelativeSource FindAncestor, 
 AncestorType=UserControl}, Path=DataContext.WindowHeight}"/>

@@ -48,7 +48,7 @@
 					</ItemsControl.ItemsPanel>
 				</ItemsControl>
 			</Grid>
-			<Grid Visibility="{Binding ShowItems}" >
+                <Grid Visibility="{Binding ShowItems, FallbackValue=Hidden}" >
 				<ScrollViewer VerticalScrollBarVisibility="Auto">
 					<ItemsControl ItemsSource="{Binding ItemTab}" ItemTemplate="{StaticResource ItemTemplate20}">
 						<ItemsControl.ItemsPanel>
@@ -59,7 +59,7 @@
 					</ItemsControl>
 				</ScrollViewer>
 			</Grid>
-			<Grid Visibility="{Binding ShowCreatures}" >
+                <Grid Visibility="{Binding ShowCreatures, FallbackValue=Hidden}" >
 				<ScrollViewer VerticalScrollBarVisibility="Auto">
 					<ItemsControl ItemsSource="{Binding CreatureTab}" ItemTemplate="{StaticResource TITabCreaturesTemplate}">
 						<ItemsControl.ItemsPanel>
@@ -70,7 +70,7 @@
 					</ItemsControl>
 				</ScrollViewer>
 			</Grid>
-			<Grid Visibility="{Binding ShowMiniStockPile}" >
+                <Grid Visibility="{Binding ShowMiniStockPile, FallbackValue=Hidden}" >
 				<StackPanel>
 					<StackPanel Orientation="Horizontal">
 						<TextBlock FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Text="Stockpile:" />
@@ -88,11 +88,11 @@
 					</ScrollViewer>
 				</StackPanel>
 			</Grid>
-			<Grid Visibility="{Binding ShowDesignation}" >
+                <Grid Visibility="{Binding ShowDesignation, FallbackValue=Hidden}" >
 				<!-- <local:Agriculture x:Name="Agriculture" Visibility="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:GameGui}}, Path=DataContext.ShowAgriculture }" HorizontalAlignment="Right" /> -->
 				<local:Agriculture x:Name="Agriculture" />
 			</Grid>
-			<Grid Visibility="{Binding ShowDesignationRoom}" >
+                <Grid Visibility="{Binding ShowDesignationRoom, FallbackValue=Hidden}" >
 				<StackPanel>
 					<StackPanel>
 						<TextBlock FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Text="{Binding DesignationName}" />
@@ -133,18 +133,19 @@
 					</StackPanel>
 				</StackPanel>
 			</Grid>
-			<Grid Visibility="{Binding ShowJob}" >
+                <Grid Visibility="{Binding ShowJob}" >
 				<StackPanel>
 					<StackPanel Orientation="Horizontal">
-						<TextBlock FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Text="Job:" />
-						<TextBlock FontSize="20" HorizontalAlignment="Left" Text="{Binding JobName}" />
-					</StackPanel>
+						<TextBlock FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Text="Job: " />
+                            <TextBlock FontSize="20" HorizontalAlignment="Left" Text="{Binding JobName}" />
+                            <Button Content="Cancel" Margin="2" Command="{Binding CmdJob }"/>
+                    </StackPanel>
 					<StackPanel Orientation="Horizontal">
-						<TextBlock FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Text="Worked by:" />
+						<TextBlock FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Text="Worked by: " />
 						<TextBlock FontSize="20" HorizontalAlignment="Left" Text="{Binding JobWorker}" />
 					</StackPanel>
 					<StackPanel Orientation="Horizontal">
-						<TextBlock FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Text="Required tool:" />
+						<TextBlock FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" Text="Required tool: " />
 						<TextBlock FontSize="20" HorizontalAlignment="Left" Text="{Binding RequiredTool}" />
 					</StackPanel>
 				</StackPanel>

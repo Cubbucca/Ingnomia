@@ -137,3 +137,9 @@ void EventConnector::onManageCommand( unsigned int tileID )
 			break;
 	}
 }
+
+void EventConnector::onJobCommand( unsigned int jobID )
+{
+	Position pos = Global::jm().getJob( jobID )->pos();
+	Global::jm().cancelJob( pos );
+}

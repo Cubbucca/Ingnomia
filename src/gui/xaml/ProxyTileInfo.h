@@ -34,6 +34,7 @@ public:
 
 	void sendTerrainCommand( unsigned int tileID, QString cmd );
 	void sendManageCommand( unsigned int tileID );
+	void sendJobCommand( unsigned int jobID );
 
 	void requestStockpileItems( unsigned int tileID );
 
@@ -49,6 +50,7 @@ private slots:
 signals:
 	void signalTerrainCommand( unsigned int tileID, QString cmd );
 	void signalManageCommand( unsigned int tileID );
+	void signalJobCommand( unsigned int tileID );
 	void signalRequestStockpileItems( unsigned int tileID );
 	void signalSetTennant( unsigned int designationID, unsigned int gnomeID );
 };

@@ -132,6 +132,7 @@ TileInfoModel::TileInfoModel()
 	m_proxy->setParent( this );
 
 	m_tileIDString = Noesis::String( std::to_string( m_tileID ).c_str() );
+	m_jobIDString = Noesis::String( std::to_string( m_jobID ).c_str() );
 
 	_tabItems = *new ObservableCollection<TabItem>();
 
@@ -153,6 +154,7 @@ TileInfoModel::TileInfoModel()
 	_cmdTab.SetExecuteFunc( MakeDelegate( this, &TileInfoModel::OnCmdTab ) );
 	_cmdTerrain.SetExecuteFunc( MakeDelegate( this, &TileInfoModel::OnCmdTerrain ) );
 	_cmdManage.SetExecuteFunc( MakeDelegate( this, &TileInfoModel::OnCmdManage ) );
+	_cmdJob.SetExecuteFunc( MakeDelegate( this, &TileInfoModel::OnCmdJob ) );
 	_miniSPContents = *new ObservableCollection<TabItem>();
 	_possibleTennants = *new ObservableCollection<CreatureTabItem>();
 }
@@ -352,11 +354,13 @@ void TileInfoModel::onUpdateTileInfo( const GuiTileInfo& tileInfo )
 			m_tennant = _possibleTennants->Get( 0 );
 		}
 	}
-
+	m_jobIDString  = Noesis::String( std::to_string( tileInfo.jobID ).c_str() );
+	m_jobID        = tileInfo.jobID;
 	m_jobName      = tileInfo.jobName.toStdString().c_str();
 	m_jobWorker    = tileInfo.jobWorker.toStdString().c_str();
 	m_requiredTool = tileInfo.requiredTool.toStdString().c_str();
 
+	OnPropertyChanged( "JobID" );
 	OnPropertyChanged( "JobName" );
 	OnPropertyChanged( "JobWorker" );
 	OnPropertyChanged( "RequiredTool" );
@@ -485,6 +489,11 @@ void TileInfoModel::OnCmdTerrain( BaseComponent* param )
 void TileInfoModel::OnCmdManage( BaseComponent* param )
 {
 	m_proxy->sendManageCommand( m_tileID );
+}
+
+void TileInfoModel::OnCmdJob( BaseComponent* param )
+{
+	m_proxy->sendJobCommand( m_jobID );
 }
 
 const char* TileInfoModel::GetShowTerrain() const
@@ -668,11 +677,13 @@ NS_IMPLEMENT_REFLECTION( TileInfoModel, "IngnomiaGUI.TileInfoModel" )
 	NsProp( "CmdTab", &TileInfoModel::GetCmdTab );
 	NsProp( "CmdTerrain", &TileInfoModel::GetCmdTerrain );
 	NsProp( "CmdManage", &TileInfoModel::GetCmdManage );
+	NsProp( "CmdJob", &TileInfoModel::GetCmdJob );
 
 	NsProp( "TerrainTab", &TileInfoModel::getTerrainTabItems );
 	NsProp( "ItemTab", &TileInfoModel::getItemTabItems );
 	NsProp( "CreatureTab", &TileInfoModel::getCreatureTabItems );
 	
+	NsProp( "JobID", &TileInfoModel::GetJobID );
 	NsProp( "JobName", &TileInfoModel::GetJobName );
 	NsProp( "JobWorker", &TileInfoModel::GetJobWorker );
 	NsProp( "RequiredTool", &TileInfoModel::GetRequiredTool );

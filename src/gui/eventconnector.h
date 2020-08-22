@@ -121,6 +121,7 @@ public slots:
 
 	void onTerrainCommand( unsigned int tileID, QString cmd );
 	void onManageCommand( unsigned int tileID );
+	void onJobCommand( unsigned int jobID );
 
 signals:
 	void signalExit();

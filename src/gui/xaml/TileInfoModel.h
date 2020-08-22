@@ -178,6 +178,10 @@ private:
 	const char* GetShowJob() const;
 	const char* GetShowMiniSP() const;
 
+	const char* GetJobID() const
+	{
+		return m_jobIDString.Str();
+	}
 	const char* GetJobName() const
 	{
 		return m_jobName.Str();
@@ -209,6 +213,13 @@ private:
 	void OnCmdManage( BaseComponent* param );
 	NoesisApp::DelegateCommand _cmdManage;
 
+	const NoesisApp::DelegateCommand* GetCmdJob() const
+	{
+		return &_cmdJob;
+	}
+	void OnCmdJob( BaseComponent* param );
+	NoesisApp::DelegateCommand _cmdJob;
+
 	const NoesisApp::DelegateCommand* GetCmdTab() const;
 	void OnCmdTab( BaseComponent* param );
 	NoesisApp::DelegateCommand _cmdTab;
@@ -217,7 +228,8 @@ private:
 
 	unsigned int m_tileID = 0;
 	Noesis::String m_tileIDString;
-
+	unsigned int m_jobID = 0;
+	Noesis::String m_jobIDString;
 	Noesis::String m_jobName;
 	Noesis::String m_jobWorker;
 	Noesis::String m_requiredTool;

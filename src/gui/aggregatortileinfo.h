@@ -57,6 +57,7 @@ struct GuiTileInfo
 	QString water;
 	QString constructed;
 
+	unsigned int jobID = 0;
 	QString jobName;
 	QString jobWorker;
 	QString requiredTool;

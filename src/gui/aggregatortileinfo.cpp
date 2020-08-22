@@ -181,6 +181,7 @@ void AggregatorTileInfo::onUpdateTileInfo( unsigned int tileID )
 		m_tileInfo.requiredTool = "";
 		if ( job )
 		{
+			m_tileInfo.jobID = job->id();
 			m_tileInfo.jobName = job->type();
 			auto gnome         = Global::gm().gnome( job->workedBy() );
 			if ( gnome )
