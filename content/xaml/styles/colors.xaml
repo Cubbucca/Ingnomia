@@ -32,12 +32,12 @@
 	
 	
 	
-    <SolidColorBrush x:Key="TransparentWhiteBrush50" Color="{StaticResource TransparentWhiteColor30}"/>
-    <SolidColorBrush x:Key="TransparentWhiteBrush75" Color="{StaticResource TransparentWhiteColor75}"/>
-    <SolidColorBrush x:Key="TransparentWhiteBrush95" Color="{StaticResource TransparentWhiteColor95}"/>
+    <SolidColorBrush x:Key="TransparentWhiteBrush50" Color="{StaticResource TransparentWhiteColor30}" Opacity="0.7"/>
+    <SolidColorBrush x:Key="TransparentWhiteBrush75" Color="{StaticResource TransparentWhiteColor75}" Opacity="0.7"/>
+    <SolidColorBrush x:Key="TransparentWhiteBrush95" Color="{StaticResource TransparentWhiteColor95}" Opacity="0.7"/>
     <SolidColorBrush x:Key="NoesisLogoBlue" Color="#FF2AA6E2"/>
-	<SolidColorBrush x:Key="PanelBackground" Color="{StaticResource PanelBackgroundColorBlack}"/>
-	<SolidColorBrush x:Key="PanelBackgroundGrey" Color="{StaticResource PanelBackgroundColorGrey}"/>
+    <SolidColorBrush x:Key="PanelBackground" Color="{StaticResource PanelBackgroundColorBlack}" Opacity="0.4"/>
+    <SolidColorBrush x:Key="PanelBackgroundGrey" Color="{StaticResource PanelBackgroundColorGrey}" Opacity="0.4"/>
     <LinearGradientBrush x:Key="HorizontalLineBg" EndPoint="1,0" StartPoint="0,0">
         <GradientStop Color="{StaticResource TransparentWhiteColor5}" Offset="0"/>
         <GradientStop Color="{StaticResource TransparentWhiteColor30}" Offset="0.01"/>
