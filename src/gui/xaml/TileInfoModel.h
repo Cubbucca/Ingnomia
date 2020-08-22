@@ -242,6 +242,7 @@ private:
 	bool m_isEnclosed = false;
 	bool m_hasAlarmBell = false;
 	Noesis::String m_beds;
+	bool m_alarm = false;
 
 	TileInfoMode _mode = TileInfoMode::Terrain;
 
@@ -281,7 +282,8 @@ private:
 	const char* GetEnclosed() const;
 	const char* GetRoofed() const;
 
-
+	bool GetAlarm() const;
+	void SetAlarm( bool value );
 
 
 	NS_DECLARE_REFLECTION( TileInfoModel, NotifyPropertyChangedBase )

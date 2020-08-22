@@ -234,6 +234,7 @@ void TileInfoModel::onUpdateTileInfo( const GuiTileInfo& tileInfo )
 			m_isEnclosed = tileInfo.isEnclosed;
 			m_hasAlarmBell = tileInfo.hasAlarmBell;
 			m_beds = tileInfo.beds.toStdString().c_str();
+			m_alarm = tileInfo.alarm;
 		}
 	}
 	else
@@ -370,6 +371,7 @@ void TileInfoModel::onUpdateTileInfo( const GuiTileInfo& tileInfo )
 	OnPropertyChanged( "TerrainTabItems" );
 	OnPropertyChanged( "PossibleTennnants" );
 	OnPropertyChanged( "Tennant" );
+	OnPropertyChanged( "Alarm" );
 
 	OnPropertyChanged( "VisRoomAssign" );
 	OnPropertyChanged( "VisRoomValue" );
@@ -659,6 +661,20 @@ const char* TileInfoModel::GetRoofed() const
 	return "no";
 }
 
+bool TileInfoModel::GetAlarm() const
+{
+	return m_alarm;
+}
+
+void TileInfoModel::SetAlarm( bool value )
+{
+	if( m_alarm != value )
+	{
+		m_alarm = value;
+		m_proxy->setAlarm( m_designationID, value );
+	}
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 NS_BEGIN_COLD_REGION
 
@@ -703,6 +719,7 @@ NS_IMPLEMENT_REFLECTION( TileInfoModel, "IngnomiaGUI.TileInfoModel" )
 	NsProp( "Beds", &TileInfoModel::GetBeds );
 	NsProp( "Enclosed", &TileInfoModel::GetEnclosed );
 	NsProp( "Roofed", &TileInfoModel::GetRoofed );
+	NsProp( "Alarm", &TileInfoModel::GetAlarm, &TileInfoModel::SetAlarm );
 }
 
 NS_IMPLEMENT_REFLECTION( IngnomiaGUI::TabItem )
