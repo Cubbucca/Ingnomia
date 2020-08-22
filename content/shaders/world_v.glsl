@@ -26,6 +26,8 @@
 #define TF_WALKABLEMONSTERS     0x00400000
 #define TF_PASTURE              0x00800000
 #define TF_INDIRECT_SUNLIGHT    0x01000000
+#define TF_TRANSPARENT          0x40000000
+#define TF_OVERSIZE             0x80000000
 
 #define WATER_TOP               0x01
 #define WATER_EDGE              0x02
@@ -74,10 +76,6 @@ layout(std430, binding = 0) readonly restrict buffer tileData1
 } tileData;
 
 uniform bool uWallsLowered;
-
-uniform bool uPaintSolid;
-uniform bool uPaintCreatures;
-uniform bool uPaintWater;
 uniform bool uPaintFrontToBack;
 
 uvec3 rotate(uvec3 pos)
@@ -172,18 +170,15 @@ void main()
 	uint itemSprite = 0;
 	uint jobFloorSprite = 0;
 	uint jobWallSprite = 0;
-	if(uPaintSolid)
+	uint creatureSprite = 0;
+	// Render in first pass if no transparency effects, and in second pass otherwise
+	if( uPaintFrontToBack ^^ ( vFlags & TF_TRANSPARENT ) != 0 )
 	{
 		floorSprite = tileData.data[index].floorSpriteUID;
 		wallSprite = tileData.data[index].wallSpriteUID;
 		itemSprite = tileData.data[index].itemSpriteUID;
 		jobFloorSprite = tileData.data[index].jobSpriteFloorUID;
 		jobWallSprite = tileData.data[index].jobSpriteWallUID;
-	}
-
-	uint creatureSprite = 0;
-	if(uPaintCreatures)
-	{
 		creatureSprite = tileData.data[index].creatureSpriteUID;
 	}
 	
@@ -195,7 +190,7 @@ void main()
 	uint vFluidLevelPacked1 = 0;
 	uint vFluidFlags = 0;
 
-	if(uPaintWater)
+	if( !uPaintFrontToBack )
 	{
 		const uvec3 above = uvec3(tile.xy, tile.z + 1);
 		const uvec3 offsetLeft = rotateOffset( uvec3( 0, 1, 0 ) );
@@ -253,7 +248,19 @@ void main()
 
 	const bool uIsWall = aPos.z != 0;
 
-	vTexCoords = vec2( aPos.x, 1.0 - aPos.y );
+	vec2 vVertexCoords;
+	if( ( vFlags & TF_OVERSIZE ) != 0 )
+	{
+		// Round to full sprite extent, for sprites which are not adhering to regular tile bounding boxes
+		vVertexCoords.x = round(aPos.x);
+		vVertexCoords.y = round(aPos.y);
+	}
+	else
+	{
+		vVertexCoords = aPos.xy;
+	}
+
+	vTexCoords = vec2( vVertexCoords.x, 1.0 - vVertexCoords.y );
 	block1 = uvec4(floorSprite, jobFloorSprite, wallSprite, jobWallSprite);
 	block2 = uvec4(itemSprite, creatureSprite, vFluidLevelPacked1, uIsWall);
 	block3 = uvec4(vFlags, vFlags2, vLightLevel, vVegetationLevel);
@@ -282,7 +289,7 @@ void main()
 	}
 	else
 	{
-		vec3 worldPos = project( rotate( tile ), aPos.xy, uIsWall );
+		vec3 worldPos = project( rotate( tile ), vVertexCoords.xy, uIsWall );
 		gl_Position = uTransform * vec4( worldPos, 1.0 );
 	}
 }

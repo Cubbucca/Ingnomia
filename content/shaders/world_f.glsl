@@ -26,6 +26,8 @@
 #define TF_WALKABLEMONSTERS     0x00400000
 #define TF_PASTURE              0x00800000
 #define TF_INDIRECT_SUNLIGHT    0x01000000
+#define TF_TRANSPARENT          0x40000000
+#define TF_OVERSIZE             0x80000000
 
 #define WATER_TOP               0x01
 #define WATER_EDGE              0x02
@@ -54,7 +56,6 @@ uniform int uWaterTex;
 uniform int uWorldRotation;
 uniform bool uOverlay;
 uniform bool uDebug;
-uniform bool uDebugOverlay;
 uniform bool uWallsLowered;
 uniform float uDaylight;
 uniform float uLightMin;
@@ -117,7 +118,7 @@ void main()
 		else
 		{
 			spriteID = floorSpriteID;
-			if( spriteID > 0 )
+			if( spriteID != 0 )
 			{
 				rot = floorSpriteFlags & 3;
 				rot = ( rot + uWorldRotation ) % 4;
@@ -139,7 +140,7 @@ void main()
 			
 			spriteID = jobFloorSpriteID;
 			animFrame = 0;
-			if( ( spriteID > 0 )  )
+			if( ( spriteID != 0 )  )
 			{
 				rot = jobFloorSpriteFlags & 3;
 				rot = ( rot + uWorldRotation ) % 4;
@@ -165,26 +166,26 @@ void main()
 			{
 				vec3 roomColor = vec3( 0.0 );
 			
-				if( ( vFlags & TF_STOCKPILE ) > 0 ) //stockpile
+				if( ( vFlags & TF_STOCKPILE ) != 0 ) //stockpile
 				{
 					roomColor = vec3(1, 1, 0);
 				}
 				
-				else if( ( vFlags & TF_FARM ) > 0 ) //farm
+				else if( ( vFlags & TF_FARM ) != 0 ) //farm
 				{
 					roomColor = vec3(0.5, 0, 1);
 				}
-				else if( ( vFlags & TF_GROVE ) > 0 ) //grove
+				else if( ( vFlags & TF_GROVE ) != 0 ) //grove
 				{
 					roomColor = vec3(0, 1, 0.5);
 				}
-				else if( ( vFlags & TF_PASTURE ) > 0 ) 
+				else if( ( vFlags & TF_PASTURE ) != 0 ) 
 				{
 					roomColor = vec3(0, 0.9, 0.9);
 				}
-				else if( ( vFlags & TF_WORKSHOP ) > 0 ) //workshop
+				else if( ( vFlags & TF_WORKSHOP ) != 0 ) //workshop
 				{
-					if( ( vFlags & TF_BLOCKED ) > 0 )
+					if( ( vFlags & TF_BLOCKED ) != 0 )
 					{
 						roomColor = vec3(1, 0, 0);
 					}
@@ -193,11 +194,11 @@ void main()
 						roomColor = vec3(1, 1, 0);
 					}
 				}
-				else if( ( vFlags & TF_ROOM ) > 0 ) //room
+				else if( ( vFlags & TF_ROOM ) != 0 ) //room
 				{
 					roomColor = vec3(0, 0, 1);
 				}
-				else if( ( vFlags & TF_NOPASS ) > 0 ) //room
+				else if( ( vFlags & TF_NOPASS ) != 0 ) //room
 				{
 					roomColor = vec3(1, 0, 0);
 				}
@@ -277,7 +278,7 @@ void main()
 		else
 		{
 			spriteID = wallSpriteID;
-			if( spriteID > 0 )
+			if( spriteID != 0 )
 			{
 				rot = wallSpriteFlags & 3;
 				rot = ( rot + uWorldRotation ) % 4;
@@ -305,7 +306,7 @@ void main()
 			
 			spriteID = itemSpriteID;
 			animFrame = 0;
-			if( spriteID > 0 )
+			if( spriteID != 0 )
 			{
 				rot = itemSpriteID & 3;
 				rot = ( rot + uWorldRotation ) % 4;
@@ -322,7 +323,7 @@ void main()
 	
 		spriteID = jobWallSpriteID;
 		animFrame = 0;
-		if( spriteID > 0 && ( vFlags & TF_JOB_WALL ) > 0 )
+		if( spriteID != 0 && ( vFlags & TF_JOB_WALL ) > 0 )
 		{
 			rot = jobWallSpriteFlags & 3;
 			rot = ( rot + uWorldRotation ) % 4;
@@ -355,7 +356,7 @@ void main()
 	
 		spriteID = creatureSpriteID;
 		animFrame = 0;
-		if( spriteID > 0 )
+		if( spriteID != 0 )
 		{
 			rot = creatureSpriteFlags & 3;
 			rot = ( rot + uWorldRotation ) % 4;
