@@ -162,9 +162,10 @@ void MainWindow::keyPressEvent( QKeyEvent* event )
 	{
 		noesisTick();
 	}
-
 	if ( !ret )
 	{
+		if (!keysPressed.contains((Qt::Key)event->key()))
+			keysPressed += (Qt::Key)event->key();
 		switch ( event->key() )
 		{
 			case Qt::Key_H:
@@ -173,7 +174,7 @@ void MainWindow::keyPressEvent( QKeyEvent* event )
 				break;
 			case Qt::Key_K:
 				break;
-			case Qt::Key_D:
+			case Qt::Key_Slash:
 				if ( event->modifiers() & Qt::ControlModifier )
 				{
 					Global::debugMode = !Global::debugMode;
@@ -194,11 +195,36 @@ void MainWindow::keyPressEvent( QKeyEvent* event )
 				redraw();
 				break;
 			case Qt::Key_Comma:
-				m_renderer->rotate( 1 );
+				m_renderer->rotateAtCursor( 1 );
 				break;
 			case Qt::Key_Period:
-				m_renderer->rotate( -1 );
+				m_renderer->rotateAtCursor( -1 );
 				break;
+			case Qt::Key_W:
+			case Qt::Key_A:
+			case Qt::Key_S:
+			case Qt::Key_D:
+				//m_renderer->move( 0, 16 * m_renderer->getScale() );
+				int x = 0, y = 0;
+				if ( keysPressed.contains( Qt::Key_W ) )
+					y += 16;
+				if ( keysPressed.contains( Qt::Key_A ) )
+					x += 32;
+				if ( keysPressed.contains( Qt::Key_S ) )
+					y += -16;
+				if ( keysPressed.contains( Qt::Key_D ) )
+					x += -32;
+				m_renderer->move( x * m_renderer->getScale(), y * m_renderer->getScale() );
+				break;
+			/*case Qt::Key_S:
+				m_renderer->move( 0, -16 * m_renderer->getScale() );
+				break;
+			case Qt::Key_A:
+				m_renderer->move( 32 * m_renderer->getScale(), 0 );
+				break;
+			case Qt::Key_D:
+				m_renderer->move( -32 * m_renderer->getScale(), 0 );
+				break;*/
 		}
 	}
 }
@@ -211,6 +237,28 @@ void MainWindow::keyReleaseEvent( QKeyEvent* event )
 	{
 		noesisTick();
 	}
+	keysPressed -= (Qt::Key)event->key();
+	/*Qt::Key qt_key = (Qt::Key)event->key();
+	if ( keysPressed.contains( Qt::Key_W ) && Qt::Key_W != qt_key )
+	{
+		QKeyEvent evt( QKeyEvent::KeyPress, Qt::Key_W, Qt::NoModifier, "W" );
+		QApplication::sendEvent( this, &evt );
+	}
+	if ( keysPressed.contains( Qt::Key_A ) && Qt::Key_A != qt_key )
+	{
+		QKeyEvent evt( QKeyEvent::KeyPress, Qt::Key_A, Qt::NoModifier, "A" );
+		QApplication::sendEvent( this, &evt );
+	}
+	if ( keysPressed.contains( Qt::Key_S ) && Qt::Key_S != qt_key )
+	{
+		QKeyEvent evt( QKeyEvent::KeyPress, Qt::Key_S, Qt::NoModifier, "S" );
+		QApplication::sendEvent( this, &evt );
+	}
+	if ( keysPressed.contains( Qt::Key_D ) && Qt::Key_D != qt_key )
+	{
+		QKeyEvent evt( QKeyEvent::KeyPress, Qt::Key_D, Qt::NoModifier, "D" );
+		QApplication::sendEvent( this, &evt );
+	}*/
 }
 
 bool MainWindow::isOverGui( int x, int y )
@@ -558,6 +606,16 @@ void MainWindow::noesisTick()
 	}
 }
 
+int MainWindow::get_mouseX()
+{
+	return m_mouseX;
+}
+
+int MainWindow::get_mouseY()
+{
+	return m_mouseY;
+}
+
 void MainWindow::paintGL()
 {
 	// Trigger noesis updates again, to avoid "stuttering UI"
@@ -678,3 +736,5 @@ void MainWindow::registerComponents()
 
 	Noesis::RegisterComponent<IngnomiaGUI::GameGui>();
 }
+
+

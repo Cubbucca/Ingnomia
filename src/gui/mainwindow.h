@@ -96,9 +96,13 @@ private:
 
 	bool m_pendingUpdate = false;
 
+	QSet<Qt::Key> keysPressed;
+
 public slots:
 	void redraw();
 	void noesisTick();
+	int get_mouseX();
+	int get_mouseY();
 signals:
 	void signalWindowSize( int w, int h );
 	void signalViewLevel( int level );

@@ -730,6 +730,47 @@ void MainWindowRenderer::rotate( int direction )
 	onRenderParamsChanged();
 }
 
+void MainWindowRenderer::rotateAtCursor( int direction )
+{
+	Position startingPos = calcCursor( m_parent->get_mouseX(), m_parent->get_mouseY(), true );
+	int originalRotation = m_rotation;
+	rotate( direction );
+	Position finishingPos = calcCursor( m_parent->get_mouseX(), m_parent->get_mouseY(), true );
+
+	bool clockwise = ( direction > 0 ) ? true : false;
+	float local_scale = m_scale;
+	int x = ( startingPos.x > finishingPos.x ) ? (startingPos.x - finishingPos.x) * 16 : (finishingPos.x - startingPos.x) * 16,
+		y = ( startingPos.y > finishingPos.y ) ? (startingPos.y - finishingPos.y) * 32: (finishingPos.y - startingPos.y) * 32; 
+
+	switch ( originalRotation )
+	{
+		case 0:
+			if ( clockwise )
+				move( -(32*50), -(16*50) );
+			else
+				move( -( 32 * 50 ) * local_scale, -( 16 * 50 ) * local_scale );
+			break;
+		case 1:
+			if ( clockwise )
+				move( 0, 0 );
+			else
+				move( 0, 0 );
+			break;
+		case 2:
+			if ( clockwise )
+				move( 0, 0);
+			else
+				move( 0, 0 );
+			break;
+		case 3:
+			if ( clockwise )
+				move( 0, 0 );
+			else
+				move( 0, 0 );
+			break;
+	};
+}
+
 void MainWindowRenderer::move( int x, int y )
 {
 	m_moveX += x / m_scale;
@@ -742,6 +783,11 @@ void MainWindowRenderer::scale( float factor )
 	m_scale *= factor;
 	m_scale = qBound( 0.25f, m_scale, 15.f );
 	onRenderParamsChanged();
+}
+
+float MainWindowRenderer::getScale()
+{
+	return m_scale;
 }
 
 void MainWindowRenderer::setViewLevel( int level )

@@ -144,8 +144,10 @@ public slots:
 	void reloadShaders();
 	void resize( int w, int h );
 	void rotate( int direction );
+	void rotateAtCursor( int direction );
 	void move( int x, int y );
 	void scale( float factor );
+	float getScale();
 	void setViewLevel( int level );
 	void cleanup();
 	void cleanupWorld();
