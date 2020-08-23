@@ -195,10 +195,10 @@ void MainWindow::keyPressEvent( QKeyEvent* event )
 				redraw();
 				break;
 			case Qt::Key_Comma:
-				m_renderer->rotateAtCursor( 1 );
+				m_renderer->rotateAtCursor( -1 );
 				break;
 			case Qt::Key_Period:
-				m_renderer->rotateAtCursor( -1 );
+				m_renderer->rotateAtCursor( 1 );
 				break;
 			case Qt::Key_W:
 			case Qt::Key_A:

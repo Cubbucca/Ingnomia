@@ -732,41 +732,97 @@ void MainWindowRenderer::rotate( int direction )
 
 void MainWindowRenderer::rotateAtCursor( int direction )
 {
-	Position startingPos = calcCursor( m_parent->get_mouseX(), m_parent->get_mouseY(), true );
+	Position startingPos = calcCursor( m_parent->get_mouseX(), m_parent->get_mouseY(), false );
 	int originalRotation = m_rotation;
 	rotate( direction );
-	Position finishingPos = calcCursor( m_parent->get_mouseX(), m_parent->get_mouseY(), true );
+	Position finishingPos = calcCursor( m_parent->get_mouseX(), m_parent->get_mouseY(), false );
 
 	bool clockwise = ( direction > 0 ) ? true : false;
 	float local_scale = m_scale;
-	int x = ( startingPos.x > finishingPos.x ) ? (startingPos.x - finishingPos.x) * 16 : (finishingPos.x - startingPos.x) * 16,
-		y = ( startingPos.y > finishingPos.y ) ? (startingPos.y - finishingPos.y) * 32: (finishingPos.y - startingPos.y) * 32; 
-
+	int local_dimX = Global::dimX;
+	int local_dimY = Global::dimY;
+	int sx = 0, sy = 0, fx = 0, fy = 0, x = 0, y = 0;
 	switch ( originalRotation )
 	{
 		case 0:
+			sx = ( ( startingPos.y - 1 ) - ( startingPos.x - 1 ) );
+			sy = ( ( startingPos.x - 1 ) + ( startingPos.y - 1 ) );
+			fy = ( ( finishingPos.y - 1 ) - ( finishingPos.x - 1 ) );
+			fx = ( ( finishingPos.x - 1 ) + ( finishingPos.y - 1 ) );
 			if ( clockwise )
-				move( -(32*50), -(16*50) );
+			{
+				x = fx * 16;
+				y = fy * 8;
+				move( -x * local_scale, -y * local_scale );
+				x = sy * 16;
+				y = sx * 8;
+				move( x * local_scale, y * local_scale );
+			}
 			else
-				move( -( 32 * 50 ) * local_scale, -( 16 * 50 ) * local_scale );
+			{
+				x  = fx * 16;
+				y  = fy * 8;
+				move( x * local_scale, y * local_scale );
+				x = sy * 16;
+				y = sx * 8;
+				move( -x * local_scale, -y * local_scale );
+			}
 			break;
 		case 1:
+			sx = ( ( startingPos.x - 1 ) - ( startingPos.y - 1 ) ) * 16;
+			sy = ( ( startingPos.x - 1 ) + ( startingPos.y - 1 ) ) * 8;
+			fx = ( ( finishingPos.y - 1 ) - ( finishingPos.x - 1 ) ) * 16;
+			fy = ( ( finishingPos.x - 1 ) + ( finishingPos.y - 1 ) ) * 8;
 			if ( clockwise )
-				move( 0, 0 );
+			{
+				move( fx * local_scale, -fy * local_scale );
+				move( sx * local_scale, sy * local_scale );
+			}
 			else
-				move( 0, 0 );
+			{
+				move( -fx * local_scale, fy * local_scale );
+				move( -sx * local_scale, -sy * local_scale );
+			}
 			break;
 		case 2:
+			sx = ( ( startingPos.y - 1 ) - ( startingPos.x - 1 ) );
+			sy = ( ( startingPos.x - 1 ) + ( startingPos.y - 1 ) );
+			fy = ( ( finishingPos.y - 1 ) - ( finishingPos.x - 1 ) );
+			fx = ( ( finishingPos.x - 1 ) + ( finishingPos.y - 1 ) );
 			if ( clockwise )
-				move( 0, 0);
+			{
+				x  = fx * 16;
+				y  = fy * 8;
+				move( x * local_scale, y * local_scale );
+				x = sy * 16;
+				y = sx * 8;
+				move( -x * local_scale, -y * local_scale );
+			}
 			else
-				move( 0, 0 );
+			{
+				x  = fx * 16;
+				y  = fy * 8;
+				move( -x * local_scale, -y * local_scale );
+				x = sy * 16;
+				y = sx * 8;
+				move( x * local_scale, y * local_scale );
+			}
 			break;
 		case 3:
+			sx = ( ( startingPos.x - 1 ) - ( startingPos.y - 1 ) ) * 16;
+			sy = ( ( startingPos.x - 1 ) + ( startingPos.y - 1 ) ) * 8;
+			fx = ( ( finishingPos.y - 1 ) - ( finishingPos.x - 1 ) ) * 16;
+			fy = ( ( finishingPos.x - 1 ) + ( finishingPos.y - 1 ) ) * 8;
 			if ( clockwise )
-				move( 0, 0 );
+			{
+				move( -fx * local_scale, fy * local_scale );
+				move( -sx * local_scale, -sy * local_scale );
+			}
 			else
-				move( 0, 0 );
+			{
+				move( fx * local_scale, -fy * local_scale );
+				move( sx * local_scale, sy * local_scale );
+			}
 			break;
 	};
 }
