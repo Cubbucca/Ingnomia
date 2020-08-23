@@ -145,7 +145,7 @@ public slots:
 	void resize( int w, int h );
 	void rotate( int direction );
 	void rotateAtCursor( int direction );
-	void centerWorldView();
+	void centerWorldView(int recursions = 0);
 	void move( int x, int y );
 	void scale( float factor );
 	float getScale();
