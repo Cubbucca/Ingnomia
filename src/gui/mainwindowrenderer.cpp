@@ -827,6 +827,54 @@ void MainWindowRenderer::rotateAtCursor( int direction )
 	};
 }
 
+void MainWindowRenderer::centerWorldView()
+{
+	Position startingPos = calcCursor( m_parent->get_mouseX(), m_parent->get_mouseY(), true );
+
+	float local_scale = m_scale;
+	int local_dimX    = Global::dimX;
+	int local_dimY    = Global::dimY;
+	int sx = 0, sy = 0;
+	switch ( m_rotation )
+	{
+		case 0:
+			sx = ( ( startingPos.y - 1 ) - ( startingPos.x - 1 ) ) * 16;
+			sy = ( ( startingPos.x - 1 ) + ( startingPos.y - 1 ) ) * 8;
+			move( -sx * local_scale, sy * local_scale );
+			move( 0, -( ( local_dimY / 2 ) * 16 ) * local_scale );
+			break;
+		case 1:
+			sx = ( ( startingPos.x - 1 ) + ( startingPos.y - 1 ) ) * 16;
+			sy = ( ( startingPos.y - 1 ) - ( startingPos.x - 1 ) ) * 8;
+			move( -sx * local_scale, -sy * local_scale );
+			move( local_dimX * 16 * local_scale, 0 );
+			break;
+		case 2:
+			sx = ( ( startingPos.y - 1 ) - ( startingPos.x - 1 ) ) * 16;
+			sy = ( ( startingPos.x - 1 ) + ( startingPos.y - 1 ) ) * 8;
+			move( sx * local_scale, -sy * local_scale );
+			move( 0, ( local_dimY / 2 ) * 16 * local_scale );
+			break;
+		case 3:
+			sx = ( ( startingPos.x - 1 ) + ( startingPos.y - 1 ) ) * 16;
+			sy = ( ( startingPos.y - 1 ) - ( startingPos.x - 1 ) ) * 8;
+			move( sx * local_scale, sy * local_scale );
+			move( -( local_dimX * 16 ) * local_scale, 0 );
+			break;
+	};
+
+	
+	Position landingPos = calcCursor( m_parent->get_mouseX(), m_parent->get_mouseY(), true );
+
+	if (	landingPos.x < ( local_dimX / 2 - 5 )
+		||	landingPos.x > ( local_dimX / 2 + 5 )
+		||	landingPos.y < ( local_dimY / 2 - 5 )
+		||	landingPos.y > ( local_dimY / 2 + 5 ) )
+	{
+		centerWorldView();
+	}
+}
+
 void MainWindowRenderer::move( int x, int y )
 {
 	m_moveX += x / m_scale;

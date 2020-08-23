@@ -168,6 +168,9 @@ void MainWindow::keyPressEvent( QKeyEvent* event )
 			keysPressed += (Qt::Key)event->key();
 		switch ( event->key() )
 		{
+			case Qt::Key_C:
+				m_renderer->centerWorldView();
+				break;
 			case Qt::Key_H:
 				Global::wallsLowered = !Global::wallsLowered;
 				m_renderer->onRenderParamsChanged();
