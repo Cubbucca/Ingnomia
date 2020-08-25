@@ -49,7 +49,7 @@
 					</StackPanel>
 				</Grid>
 				
-				<ComboBox x:Name="PrioritySelector" Margin="10,5,10,5"
+				<ComboBox x:Name="PrioritySelector" Margin="10,5,10,5" IsEditable="False"
 								ItemsSource="{Binding Priorities}"
 								SelectedItem="{Binding SelectedPrio, Mode=TwoWay}"  
 								ItemTemplate="{StaticResource ItemTemplate}" />
@@ -144,7 +144,7 @@
 					</StackPanel>
 				</Grid>
 				
-				<ComboBox x:Name="PrioritySelectorA" Margin="10,5,10,5"
+				<ComboBox x:Name="PrioritySelectorA" Margin="10,5,10,5" IsEditable="False"
 								ItemsSource="{Binding Priorities}"
 								SelectedItem="{Binding SelectedPrio, Mode=TwoWay}"  
 								ItemTemplate="{StaticResource ItemTemplate}" />
@@ -222,7 +222,7 @@
 					</StackPanel>
 				</Grid>
 				
-				<ComboBox x:Name="PrioritySelectorG" Margin="10,5,10,5"
+				<ComboBox x:Name="PrioritySelectorG" Margin="10,5,10,5" IsEditable="False"
 								ItemsSource="{Binding Priorities}"
 								SelectedItem="{Binding SelectedPrio, Mode=TwoWay}"  
 								ItemTemplate="{StaticResource ItemTemplate}" />

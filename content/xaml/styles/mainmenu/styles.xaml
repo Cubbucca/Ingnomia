@@ -20,8 +20,12 @@
     <Style TargetType="ToggleButton" BasedOn="{StaticResource {x:Type ToggleButton}}">
         <Setter Property="Control.Foreground" Value="{StaticResource NormalFgBrush}"/>
         <Setter Property="Control.Background" Value="{StaticResource NormalBgBrush}"/>
+        <Setter Property="KeyboardNavigation.DirectionalNavigation" Value="None"/>
+        <Setter Property="KeyboardNavigation.DirectionalNavigation" Value="None"/>
+        <Setter Property="KeyboardNavigation.DirectionalNavigation" Value="None"/>
+        <Setter Property="KeyboardNavigation.IsTabStop" Value="False"/>
     </Style>
-
+    
     <Style TargetType="Border">
         <Setter Property="Control.Foreground" Value="{StaticResource NormalFgBrush}"/>
         <Setter Property="Control.Background" Value="{StaticResource NormalBgBrush}"/>
@@ -110,7 +114,7 @@
 	</DataTemplate>
 	
 	<DataTemplate x:Key="ItemTemplate">
-        <TextBlock Text="{Binding Name}"/>
+        <TextBlock Text="{Binding Name}" Focusable="False"/>
     </DataTemplate>
 	
 	<DataTemplate x:Key="StartItemTemplate">
@@ -381,7 +385,7 @@
 				</StackPanel>
 			</Button>
 
-            <StackPanel Grid.Column="1"  Margin="8,0" KeyboardNavigation.TabNavigation="Local" Width="250">
+            <StackPanel Grid.Column="1"  Margin="8,0"  Width="250">
                 <TextBlock Text="{Binding Name}" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Bold" FontSize="16" Grid.Row="0" Grid.Column="0" Margin="0,0,0,4"/>
 				<ItemsControl  ItemsSource="{Binding RequiredItems}" ItemTemplate="{StaticResource RequiredItemTemplate}">
 					<ItemsControl.ItemsPanel>

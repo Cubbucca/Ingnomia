@@ -207,27 +207,21 @@ void MainWindow::keyPressEvent( QKeyEvent* event )
 			case Qt::Key_A:
 			case Qt::Key_S:
 			case Qt::Key_D:
-				//m_renderer->move( 0, 16 * m_renderer->getScale() );
+			case Qt::Key_Left:
+			case Qt::Key_Right:
+			case Qt::Key_Up:
+			case Qt::Key_Down:
 				int x = 0, y = 0;
-				if ( keysPressed.contains( Qt::Key_W ) )
+				if ( keysPressed.contains( Qt::Key_W ) || keysPressed.contains( Qt::Key_Up ) )
 					y += 16;
-				if ( keysPressed.contains( Qt::Key_A ) )
+				if ( keysPressed.contains( Qt::Key_A ) || keysPressed.contains( Qt::Key_Left ) )
 					x += 32;
-				if ( keysPressed.contains( Qt::Key_S ) )
+				if ( keysPressed.contains( Qt::Key_S ) || keysPressed.contains( Qt::Key_Down ) )
 					y += -16;
-				if ( keysPressed.contains( Qt::Key_D ) )
+				if ( keysPressed.contains( Qt::Key_D ) || keysPressed.contains( Qt::Key_Right ) )
 					x += -32;
 				m_renderer->move( x * m_renderer->getScale(), y * m_renderer->getScale() );
 				break;
-			/*case Qt::Key_S:
-				m_renderer->move( 0, -16 * m_renderer->getScale() );
-				break;
-			case Qt::Key_A:
-				m_renderer->move( 32 * m_renderer->getScale(), 0 );
-				break;
-			case Qt::Key_D:
-				m_renderer->move( -32 * m_renderer->getScale(), 0 );
-				break;*/
 		}
 	}
 }

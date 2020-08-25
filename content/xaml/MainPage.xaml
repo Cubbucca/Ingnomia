@@ -57,7 +57,16 @@
 			<Button x:Name="MMLoadGame"  Style="{StaticResource MenuButtonStyle}" Content="Load Game" Command="{Binding LoadGame}"/>
 			<Button x:Name="MMSettings"    Style="{StaticResource MenuButtonStyle}" Content="Settings" Command="{Binding Settings}" />
 			<Button x:Name="MMExit"      Style="{StaticResource MenuButtonStyle}" Content="Exit" Command="{Binding Exit}" />
-			<Grid>
+                <ComboBox x:Name="PrioritySelectorG" Margin="10,5,10,5" IsEditable="False" 
+								ItemTemplate="{StaticResource ItemTemplate}" >
+                    <ComboBoxItem Content="{Binding ElementName=PrioritySelectorG, Path=IsEnabled}" Tag="IsEnabled"/>
+                    <ComboBoxItem Content="{Binding ElementName=PrioritySelectorG, Path=IsEditable}"/>
+                    <ComboBoxItem Content="{Binding ElementName=PrioritySelectorG, Path=IsFocused}"/>
+                    <ComboBoxItem Content="{Binding ElementName=PrioritySelectorG, Path=IsKeyboardFocused}"/>
+                    <ComboBoxItem Content="{Binding ElementName=PrioritySelectorG, Path=IsKeyboardFocusWithin}" IsSelected="True"/>
+                    <ComboBoxItem Content="{Binding ElementName=PrioritySelectorG, Path=IsTabStop}"/>
+                </ComboBox>
+                <Grid>
 				<ContentControl Style="{StaticResource HintStyle}" Content="Continue the last saved game." IsEnabled="{Binding IsMouseOver, ElementName=MMContinue}"/>
 				<ContentControl Style="{StaticResource HintStyle}" Content="Start a new game with previous settings." IsEnabled="{Binding IsMouseOver, ElementName=MMNewGame}"/>
 				<ContentControl Style="{StaticResource HintStyle}" Content="Start a new game with new settings." IsEnabled="{Binding IsMouseOver, ElementName=MMSetupGame}"/>
