@@ -179,6 +179,9 @@ Noesis::ObservableCollection<PlantSelectEntry>* PlantSelectRow::GetPlants() cons
 }
 #pragma endregion Plants
 
+
+#pragma region Pasture
+////////////////////////////////////////////////////////////////////////////////////////////////////
 PastureAnimalEntry::PastureAnimalEntry( const GuiPastureAnimal& animal, AgricultureProxy* proxy ) :
 	m_proxy( proxy )
 {
@@ -227,6 +230,64 @@ void PastureAnimalEntry::SetButchering( bool value )
 		}
 	}
 }
+#pragma endregion Pasture
+
+#pragma region PastureFood
+////////////////////////////////////////////////////////////////////////////////////////////////////
+FoodSelectEntry::FoodSelectEntry( const GuiPastureFoodItem& food, AgricultureProxy* proxy ) :
+	m_proxy( proxy )
+{
+	m_name = food.name.toStdString().c_str();
+	
+	m_itemSID  = food.itemSID;
+	m_materialSID = food.materialSID;
+	m_checked = food.checked;
+
+	auto pm = Util::smallPixmap( Global::sf().createSprite( food.itemSID, { food.materialSID } ), GameState::seasonString, 0 );
+
+	std::vector<unsigned char> buffer;
+
+	Util::createBufferForNoesisImage( pm, buffer );
+
+	m_bitmapSource = BitmapImage::Create( pm.width(), pm.height(), 96, 96, buffer.data(), pm.width() * 4, BitmapSource::Format::Format_RGBA8 );
+}
+
+const char* FoodSelectEntry::GetName() const
+{
+	return m_name.Str();
+}
+
+bool FoodSelectEntry::getChecked() const
+{
+	return m_checked;
+}
+	
+void FoodSelectEntry::setChecked( bool value )
+{
+	if( m_checked != value )
+	{
+		m_checked = value;
+		m_proxy->setFoodItemChecked( m_itemSID, m_materialSID, m_checked );
+	}
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+FoodSelectRow::FoodSelectRow( QList<GuiPastureFoodItem> foods, AgricultureProxy* proxy )
+{
+	m_entries = *new ObservableCollection<FoodSelectEntry>();
+
+	for ( auto food : foods )
+	{
+		m_entries->Add( MakePtr<FoodSelectEntry>( food, proxy ) );
+	}
+}
+
+Noesis::ObservableCollection<FoodSelectEntry>* FoodSelectRow::GetFoods() const
+{
+	return m_entries;
+}
+#pragma endregion PastureFood
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -246,11 +307,13 @@ AgricultureModel::AgricultureModel()
 	m_animalRows     = *new ObservableCollection<AnimalSelectRow>();
 	m_treeRows       = *new ObservableCollection<TreeSelectRow>();
 	m_pastureAnimals = *new ObservableCollection<PastureAnimalEntry>();
+	m_foodRows       = *new ObservableCollection<FoodSelectRow>();
 
 	m_cmdSelectProduct.SetExecuteFunc( MakeDelegate( this, &AgricultureModel::onCmdSelectProduct ) );
 	m_selectProduct.SetExecuteFunc( MakeDelegate( this, &AgricultureModel::onSelectProduct ) );
 	m_manageAnimalsCmd.SetExecuteFunc( MakeDelegate( this, &AgricultureModel::onManageAnimals ) );
 	m_manageAnimalsBackCmd.SetExecuteFunc( MakeDelegate( this, &AgricultureModel::onManageAnimalsBack ) );
+	m_showPastureFoodCmd.SetExecuteFunc( MakeDelegate( this, &AgricultureModel::onShowPastureFood ) );
 }
 
 void AgricultureModel::updateGlobalPlantInfo( const QList<GuiPlant>& info )
@@ -372,6 +435,7 @@ void AgricultureModel::updateStandardInfo( unsigned int ID, AgriType type, QStri
 		OnPropertyChanged( "ShowPlantSelect" );
 		OnPropertyChanged( "ShowAnimalSelect" );
 		OnPropertyChanged( "ShowTreeSelect" );
+		OnPropertyChanged( "ShowPastureFoodSelect" );
 
 		OnPropertyChanged( "ShowManageWindow" );
 	}
@@ -444,6 +508,10 @@ void AgricultureModel::updatePastureInfo( const GuiPastureInfo& info )
 	m_numFemale  = ( QString::number( info.numFemale ) + "/" ).toStdString().c_str();
 	m_maxMale    = ( QString::number( info.maxMale ) ).toStdString().c_str();
 	m_maxFemale  = ( QString::number( info.maxFemale ) ).toStdString().c_str();
+	m_foodStatus = ( QString::number( info.foodCurrent ) + "/" + QString::number( info.foodMax ) ).toStdString().c_str();
+	m_hayStatus  = ( QString::number( info.hayCurrent ) + "/" ).toStdString().c_str();
+	m_maxHay     = ( QString::number( info.hayMax ) ).toStdString().c_str();
+
 
 	m_pastureAnimals->Clear();
 
@@ -460,6 +528,9 @@ void AgricultureModel::updatePastureInfo( const GuiPastureInfo& info )
 	OnPropertyChanged( "VisManageAnimals" );
 	OnPropertyChanged( "PastureAnimals" );
 	OnPropertyChanged( "ShowManageWindow" );
+	OnPropertyChanged( "MaxHay" );
+	OnPropertyChanged( "HayStatus" );
+	OnPropertyChanged( "FoodStatus" );
 
 	m_bitmapSource = nullptr;
 	if ( !info.product.animalID.isEmpty() )
@@ -477,6 +548,23 @@ void AgricultureModel::updatePastureInfo( const GuiPastureInfo& info )
 	}
 	OnPropertyChanged( "Image" );
 	OnPropertyChanged( "Title" );
+
+	m_foodRows->Clear();
+	if( !info.food.isEmpty() )
+	{	
+		int foodDone = 0;
+		while ( foodDone < info.food.size() )
+		{
+			QList<GuiPastureFoodItem> foodRow;
+			while ( foodRow.size() < 8 && foodDone < info.food.size() )
+			{
+				foodRow.append( info.food[foodDone] );
+				++foodDone;
+			}
+			m_foodRows->Add( MakePtr<FoodSelectRow>( foodRow, m_proxy ) );
+		}
+	}
+	OnPropertyChanged( "FoodRows" );
 }
 
 void AgricultureModel::updateGroveInfo( const GuiGroveInfo& info )
@@ -668,7 +756,7 @@ const char* AgricultureModel::GetShowFarm() const
 
 const char* AgricultureModel::GetShowPasture() const
 {
-	if ( m_type == AgriType::Pasture && !m_productSelect && !m_manageWindow )
+	if ( m_type == AgriType::Pasture && !m_productSelect && !m_manageWindow && !m_pastureFoodSelect )
 	{
 		return "Visible";
 	}
@@ -705,6 +793,15 @@ const char* AgricultureModel::GetShowAnimalSelect() const
 const char* AgricultureModel::GetShowTreeSelect() const
 {
 	if ( m_type == AgriType::Grove && m_productSelect )
+	{
+		return "Visible";
+	}
+	return "Hidden";
+}
+
+const char* AgricultureModel::GetShowPastureFoodSelect() const
+{
+	if ( m_type == AgriType::Pasture && m_pastureFoodSelect )
 	{
 		return "Visible";
 	}
@@ -883,6 +980,7 @@ void AgricultureModel::onManageAnimals( BaseComponent* param )
 
 	m_manageWindow  = true;
 	m_productSelect = false;
+	m_pastureFoodSelect = false;
 	OnPropertyChanged( "ShowManageWindow" );
 	OnPropertyChanged( "ShowPasture" );
 }
@@ -891,6 +989,7 @@ void AgricultureModel::onManageAnimalsBack( BaseComponent* param )
 {
 	m_manageWindow  = false;
 	m_productSelect = false;
+	m_pastureFoodSelect = false;
 	OnPropertyChanged( "ShowManageWindow" );
 	OnPropertyChanged( "ShowPasture" );
 }
@@ -903,6 +1002,56 @@ const char* AgricultureModel::GetManageWindowVis() const
 	}
 	return "Hidden";
 }
+
+void AgricultureModel::onShowPastureFood( BaseComponent* param )
+{
+	if( param )
+	{
+		QString qParam = param->ToString().Str();
+		if( qParam == "Back" )
+		{
+			m_pastureFoodSelect = false;
+		}
+		else if( qParam == "Show" )
+		{
+			m_proxy->requestPastureFoodInfo();
+			m_pastureFoodSelect = true;
+		}
+	}
+	OnPropertyChanged( "ShowPastureFoodSelect" );
+	OnPropertyChanged( "ShowPasture" );
+}
+
+const char* AgricultureModel::GetFoodStatus() const
+{
+	return m_foodStatus.Str();
+}
+
+const char* AgricultureModel::GetHayStatus() const
+{
+	return m_hayStatus.Str();
+}
+
+const char* AgricultureModel::GetMaxHay() const
+{
+	return m_maxHay.Str();
+}
+
+void AgricultureModel::SetMaxHay( const char* value )
+{
+	if( value )
+	{
+		QString qValue = value;
+		bool ok;
+		int val = qValue.toInt( &ok );
+		if( ok )
+		{
+			qDebug() << "set max hay to: " << value;
+			m_maxHay = value;
+		}
+	}
+}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 NS_BEGIN_COLD_REGION
@@ -923,11 +1072,14 @@ NS_IMPLEMENT_REFLECTION( AgricultureModel, "IngnomiaGUI.AgricultureModel" )
 	NsProp( "ShowAnimalSelect", &AgricultureModel::GetShowAnimalSelect );
 	NsProp( "ShowTreeSelect", &AgricultureModel::GetShowTreeSelect );
 	NsProp( "ShowManageWindow", &AgricultureModel::GetManageWindowVis );
+	NsProp( "ShowPastureFoodSelect", &AgricultureModel::GetShowPastureFoodSelect );
+	NsProp( "CmdShowPastureFood", &AgricultureModel::GetShowPastureFoodCmd );
 
 	NsProp( "PlantRows", &AgricultureModel::GetPlants );
 	NsProp( "AnimalRows", &AgricultureModel::GetAnimals );
 	NsProp( "PastureAnimals", &AgricultureModel::GetPastureAnimals );
 	NsProp( "TreeRows", &AgricultureModel::GetTrees );
+	NsProp( "FoodRows", &AgricultureModel::GetFoods );
 
 	NsProp( "ProductSelection", &AgricultureModel::GetCmdSelectProduct );
 	NsProp( "SelectProduct", &AgricultureModel::GetSelectProduct );
@@ -950,6 +1102,10 @@ NS_IMPLEMENT_REFLECTION( AgricultureModel, "IngnomiaGUI.AgricultureModel" )
 	NsProp( "ManageAnimalsBack", &AgricultureModel::GetManageAnimalsBack );
 	NsProp( "HarvestHay", &AgricultureModel::GetHarvestHay, &AgricultureModel::SetHarvestHay );
 	NsProp( "Tame", &AgricultureModel::GetTame, &AgricultureModel::SetTame );
+
+	NsProp( "FoodStatus", &AgricultureModel::GetFoodStatus );
+	NsProp( "HayStatus", &AgricultureModel::GetHayStatus );
+	NsProp( "MaxHay", &AgricultureModel::GetMaxHay, &AgricultureModel::SetMaxHay );
 
 	NsProp( "PlantTrees", &AgricultureModel::GetPlantTrees, &AgricultureModel::SetPlantTrees );
 	NsProp( "FellTrees", &AgricultureModel::GetFellTrees, &AgricultureModel::SetFellTrees );
@@ -1003,4 +1159,16 @@ NS_IMPLEMENT_REFLECTION( PastureAnimalEntry )
 {
 	NsProp( "Name", &PastureAnimalEntry::GetName );
 	NsProp( "ToButcher", &PastureAnimalEntry::GetButchering, &PastureAnimalEntry::SetButchering );
+}
+
+NS_IMPLEMENT_REFLECTION( FoodSelectEntry )
+{
+	NsProp( "Name", &FoodSelectEntry::GetName );
+	NsProp( "Image", &FoodSelectEntry::getBitmapSource );
+	NsProp( "Checked", &FoodSelectEntry::getChecked, &FoodSelectEntry::setChecked );
+}
+
+NS_IMPLEMENT_REFLECTION( FoodSelectRow )
+{
+	NsProp( "Foods", &FoodSelectRow::GetFoods );
 }

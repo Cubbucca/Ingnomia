@@ -838,6 +838,11 @@ Position Pasture::findShed()
 	return Position();
 }
 
+QSet<QString>& Pasture::foodSettings()
+{
+	return m_properties.foodSettings;
+}
+
 void Pasture::addFoodSetting( QString itemSID, QString materialSID )
 {
 	m_properties.foodSettings.insert( itemSID + "_" + materialSID );
@@ -852,6 +857,27 @@ void Pasture::addFood( unsigned int itemID )
 {
 	m_properties.troughContent += 10;
 }
+
+int Pasture::maxHay()
+{
+	return m_properties.maxHay;
+}
+
+void Pasture::setMaxHay( int value )
+{
+	m_properties.maxHay = value;
+}
+
+int Pasture::foodLevel()
+{
+	return m_properties.troughContent;
+}
+
+int Pasture::maxFoodLevel()
+{
+	return m_properties.maxTroughCapacity;
+}
+
 
 bool Pasture::eatFromTrough()
 {

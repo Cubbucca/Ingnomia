@@ -112,6 +112,7 @@ public:
 	Position randomFieldPos();
 	Position findShed();
 
+	QSet<QString>& foodSettings();
 	void addFoodSetting( QString itemSID, QString materialSID );
 	void removeFoodSetting( QString itemSID, QString materialSID );
 	void addFood( unsigned int itemID );
@@ -125,6 +126,10 @@ public:
 
 	bool harvestHay();
 	void setHarvestHay( bool harvest );
+	int maxHay();
+	void setMaxHay( int value );
+	int foodLevel();
+	int maxFoodLevel();
 
 	int maxNumber();
 	int animalSize();
