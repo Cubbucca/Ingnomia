@@ -61,6 +61,8 @@ ViewModel::ViewModel()
 	_pause.SetExecuteFunc( MakeDelegate( this, &ViewModel::OnPause ) );
 	_guiZoom.SetExecuteFunc( MakeDelegate( this, &ViewModel::OnGuiZoom ) );
 
+	_loadingVis = Noesis::Visibility_Collapsed;
+
 	_state        = State::Main;
 	_showMainMenu = true;
 	_showGameGUI  = false;
@@ -239,8 +241,8 @@ void ViewModel::OnContinueGame( BaseComponent* param )
 	if ( !param )
 	{
 		qDebug() << "ViewModel OnContinueGame last game";
-		SetState( State::Wait );
-		GameManager::getInstance().continueLastGame( std::bind( &ViewModel::OnContinueGameFinished, this, _1 ) );
+		SetState( State::Loading );
+		GameManager::getInstance().continueLastGame( std::bind( &ViewModel::OnContinueGameFinished, this, _1 ));
 	}
 	else
 	{
@@ -407,6 +409,8 @@ void ViewModel::SetState( State value )
 	{
 		_state = value;
 		OnPropertyChanged( "State" );
+		_loadingVis = ( value == State::Loading ) ? Noesis::Visibility_Visible : Noesis::Visibility_Collapsed;
+		OnPropertyChanged( "_loadingVis" );
 	}
 }
 
@@ -466,7 +470,8 @@ NS_IMPLEMENT_REFLECTION( IngnomiaGUI::ViewModel, "IngnomiaGUI.ViewModel" )
 	NsProp( "CmdPause", &ViewModel::GetPause );
 	NsProp( "Resume", &ViewModel::GetResume );
 	NsProp( "FadeInCompleted", &ViewModel::GetFadeInCompleted );
-	NsProp( "State", &ViewModel::GetState, &ViewModel::SetState );
+	NsProp( "State", &ViewModel::GetState);
+	NsProp( "_loadingVis", &ViewModel::_loadingVis );
 	NsProp( "Platform", &ViewModel::GetPlatform );
 	NsProp( "ShowMainMenu", &ViewModel::GetShowMainMenu );
 	NsProp( "ShowGameGUI", &ViewModel::GetShowGameGUI );
@@ -489,4 +494,5 @@ NS_IMPLEMENT_REFLECTION_ENUM( IngnomiaGUI::State, "IngnomiaGUI.State" )
 	NsVal( "Wait", State::Wait );
 	NsVal( "GameRunning", State::GameRunning );
 	NsVal( "Ingame", State::Ingame );
+	NsVal( "Loading", State::Loading );
 }

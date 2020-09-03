@@ -2159,7 +2159,7 @@
         <Setter Property="BorderThickness" Value="{DynamicResource Border.Over}" TargetName="Border"/>
         <Setter Property="CornerRadius" Value="{DynamicResource Corner.Border2}" TargetName="Border"/>
         <Setter Property="Stroke" Value="{DynamicResource Brush.Glyph.Over}" TargetName="Arrow"/>
-        <Setter Property="FocusManager.FocusedElement" Value="{Binding RelativeSource={RelativeSource Mode=Self}}"/>
+        <!--<Setter Property="FocusManager.FocusedElement" Value="{Binding RelativeSource={RelativeSource Mode=Self}}"/>-->
       </Trigger>
       <Trigger Property="IsMouseOver" Value="True" SourceName="ArrowBorder">
         <Setter Property="Background" Value="{DynamicResource Brush.ComboBox.Over}" TargetName="ArrowBorder"/>
@@ -2220,7 +2220,6 @@
             </Trigger>
             <Trigger Property="IsFocused" Value="True">
                 <Setter Property="Background" Value="Aqua"/>
-                <Setter Property="FocusManager.FocusedElement" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"/>
             </Trigger>
             <Trigger Property="IsKeyboardFocusWithin" Value="True">
                 <Setter Property="Background" Value="SaddleBrown"/>

@@ -51,7 +51,8 @@ enum class State
 	LoadGame,
 	Wait,
 	GameRunning,
-	Ingame
+	Ingame,
+	Loading
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -104,6 +105,8 @@ private:
 
 	State GetState() const;
 	void SetState( State value );
+	Noesis::Visibility _loadingVis;
+
 
 	const NewGameModel* getNewGameModel() const;
 

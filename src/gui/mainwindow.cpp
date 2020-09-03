@@ -31,6 +31,7 @@
 #include "xaml/GameGui.xaml.h"
 #include "xaml/GameModel.h"
 #include "xaml/IngamePage.xaml.h"
+#include "xaml/LoadingPage.xaml.h"
 #include "xaml/LoadGameModel.h"
 #include "xaml/LoadGamePage.xaml.h"
 #include "xaml/Main.xaml.h"
@@ -709,6 +710,7 @@ void MainWindow::registerComponents()
 	Noesis::RegisterComponent<IngnomiaGUI::NewGameModel>();
 	Noesis::RegisterComponent<IngnomiaGUI::WaitPage>();
 	Noesis::RegisterComponent<IngnomiaGUI::IngamePage>();
+	Noesis::RegisterComponent<IngnomiaGUI::LoadingPage>();
 	Noesis::RegisterComponent<IngnomiaGUI::GameModel>();
 	Noesis::RegisterComponent<IngnomiaGUI::TileInfo>();
 	Noesis::RegisterComponent<IngnomiaGUI::TileInfoModel>();

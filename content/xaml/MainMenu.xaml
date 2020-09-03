@@ -1,5 +1,4 @@
-﻿<UserControl
-	x:Class="IngnomiaGUI.MainMenu"
+﻿<UserControl x:Class="IngnomiaGUI.MainMenu"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008" xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" mc:Ignorable="d"
@@ -17,10 +16,10 @@
 		</ResourceDictionary>					
     </UserControl.Resources>
 	<i:Interaction.Triggers>
-        <ei:DataTrigger Binding="{Binding State}" Value="{x:Static local:State.NewGame}">
+        <ei:DataTrigger Binding="{Binding State, RelativeSource={RelativeSource AncestorType=local:Main, Mode=FindAncestor}}" Value="{x:Static local:State.NewGame}">
             <ei:ControlStoryboardAction Storyboard="{StaticResource FadeInNewGame}"/>
         </ei:DataTrigger>
-        <ei:DataTrigger Binding="{Binding State}" Comparison="NotEqual" Value="{x:Static local:State.NewGame}">
+        <ei:DataTrigger Binding="{Binding State, RelativeSource={RelativeSource AncestorType=local:Main, Mode=FindAncestor}}" Comparison="NotEqual" Value="{x:Static local:State.NewGame}">
             <ei:ControlStoryboardAction Storyboard="{StaticResource FadeOutNewGame}"/>
         </ei:DataTrigger>
 		<ei:DataTrigger Binding="{Binding State}" Value="{x:Static local:State.LoadGame}">
@@ -53,6 +52,12 @@
         <ei:DataTrigger Binding="{Binding State}" Comparison="NotEqual" Value="{x:Static local:State.Main}">
             <ei:ControlStoryboardAction Storyboard="{StaticResource FadeOutMain}"/>
         </ei:DataTrigger>
+        <ei:DataTrigger Binding="{Binding State}" Value="{x:Static local:State.Loading}">
+            <ei:ControlStoryboardAction Storyboard="{StaticResource FadeInLoadingScreen}"/>
+        </ei:DataTrigger>
+        <ei:DataTrigger Binding="{Binding State}" Comparison="NotEqual" Value="{x:Static local:State.Loading}">
+            <ei:ControlStoryboardAction Storyboard="{StaticResource FadeOutLoadingScreen}"/>
+        </ei:DataTrigger>
 
     </i:Interaction.Triggers>
 	
@@ -82,7 +87,9 @@
 		<local:LoadGamePage x:Name="LoadGamePage" Grid.Row="1" Grid.Column="1" Visibility="Hidden"/>
 		<local:NewGamePage  x:Name="NewGamePage"  Grid.Row="1" Grid.Column="1" Visibility="Hidden"/>
 		<local:WaitPage  	x:Name="WaitPage"     Grid.Row="1" Grid.Column="1" Visibility="Hidden"/>
-		<local:IngamePage  	x:Name="IngamePage"   Grid.Row="1" Grid.Column="1" Visibility="Hidden"/>
-	</Grid>
+        <local:IngamePage  	x:Name="IngamePage"   Grid.Row="1" Grid.Column="1" Visibility="Hidden"/>
+        <local:LoadingPage  x:Name="LoadingPage"  Grid.Row="1" Grid.Column="1" Visibility="Hidden"/>
+        <ProgressBar IsIndeterminate="True" Visibility="{Binding _loadingVis, FallbackValue=Collapsed}" Grid.Row="2" Grid.Column="1" Width="500" Height="20"/>
+    </Grid>
 	
 </UserControl>

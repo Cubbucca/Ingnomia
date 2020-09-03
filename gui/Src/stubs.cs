@@ -12,7 +12,8 @@ namespace IngnomiaGUI
         LoadGame,
         Wait,
         GameRunning,
-        Ingame
+        Ingame,
+        Loading
     };
 
     public partial class MainMenu : UserControl
@@ -104,6 +105,7 @@ namespace IngnomiaGUI
 
     public class ViewModel : CommonModel
     {
+        public State GetState { get; }
         public State State { get; set; }
         public string Platform { get; set; }
 
@@ -112,6 +114,10 @@ namespace IngnomiaGUI
     }
 
     public partial class IngamePage : UserControl
+    {
+    }
+
+    public partial class LoadingPage : UserControl
     {
     }
 

@@ -114,6 +114,24 @@
 			<DiscreteBooleanKeyFrame KeyTime="0" Value="False"/>
 		</BooleanAnimationUsingKeyFrames>
 	</Storyboard>
-	
-	
+
+    <Storyboard x:Key="FadeInLoadingScreen">
+        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="LoadingPage">
+            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+        </ObjectAnimationUsingKeyFrames>
+        <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.IsEnabled)" Storyboard.TargetName="LoadingPage">
+            <DiscreteBooleanKeyFrame KeyTime="0" Value="True"/>
+        </BooleanAnimationUsingKeyFrames>
+    </Storyboard>
+
+    <Storyboard x:Key="FadeOutLoadingScreen">
+        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.Visibility)" Storyboard.TargetName="LoadingPage">
+            <DiscreteObjectKeyFrame KeyTime="0:0:0.1" Value="{x:Static Visibility.Collapsed}"/>
+        </ObjectAnimationUsingKeyFrames>
+        <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.IsEnabled)" Storyboard.TargetName="LoadingPage">
+            <DiscreteBooleanKeyFrame KeyTime="0" Value="False"/>
+        </BooleanAnimationUsingKeyFrames>
+    </Storyboard>
+
+
 </ResourceDictionary>

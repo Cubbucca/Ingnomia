@@ -44,6 +44,23 @@
         <Setter Property="HorizontalAlignment" Value="Center" />
     </Style>
 
+    <Style x:Key="LoadButtonStyle" TargetType="{x:Type Button}" BasedOn="{StaticResource MenuButtonStyle}">
+        <Style.Triggers>
+            <EventTrigger RoutedEvent="Click">
+                <BeginStoryboard>
+                    <Storyboard>
+                        <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility">
+                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                        </ObjectAnimationUsingKeyFrames>
+                        <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="IsEnabled">
+                            <DiscreteBooleanKeyFrame KeyTime="0" Value="True"/>
+                        </BooleanAnimationUsingKeyFrames>
+                    </Storyboard>
+                </BeginStoryboard>
+            </EventTrigger>
+        </Style.Triggers>
+    </Style>
+
     <Style x:Key="ButtonStyle1" TargetType="{x:Type ToggleButton}" BasedOn="{StaticResource {x:Type ToggleButton}}">
 		<Setter Property="FontSize" Value="20"/>
 		<Setter Property="MinWidth" Value="30"/>
