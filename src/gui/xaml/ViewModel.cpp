@@ -33,8 +33,8 @@
 #include <NsGui/UIElement.h>
 
 #include <QDebug>
-
 #include <functional>
+#include <QtCore>
 
 using namespace IngnomiaGUI;
 using namespace Noesis;
@@ -241,18 +241,15 @@ void ViewModel::OnContinueGame( BaseComponent* param )
 	if ( !param )
 	{
 		qDebug() << "ViewModel OnContinueGame last game";
-		SetState( State::Loading );
 		GameManager::getInstance().continueLastGame( std::bind( &ViewModel::OnContinueGameFinished, this, _1 ));
 	}
 	else
 	{
 		qDebug() << "ViewModel OnContinueGame" << param->ToString().Str();
-		SetState( State::Wait );
 		GameManager::getInstance().loadGame( param->ToString().Str(), std::bind( &ViewModel::OnContinueGameFinished, this, _1 ) );
 	}
 	NS_LOG_INFO( "ViewModel OnContinueGame" );
-	//SetState( State::Wait );
-	//GameManager::getInstance().startNewGame( std::bind( &ViewModel::OnContinueGameFinished, this ) );
+	SetState( State::Loading );
 }
 
 void ViewModel::OnContinueGameFinished( bool gameLoaded )
@@ -471,7 +468,6 @@ NS_IMPLEMENT_REFLECTION( IngnomiaGUI::ViewModel, "IngnomiaGUI.ViewModel" )
 	NsProp( "Resume", &ViewModel::GetResume );
 	NsProp( "FadeInCompleted", &ViewModel::GetFadeInCompleted );
 	NsProp( "State", &ViewModel::GetState);
-	NsProp( "_loadingVis", &ViewModel::_loadingVis );
 	NsProp( "Platform", &ViewModel::GetPlatform );
 	NsProp( "ShowMainMenu", &ViewModel::GetShowMainMenu );
 	NsProp( "ShowGameGUI", &ViewModel::GetShowGameGUI );

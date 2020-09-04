@@ -50,10 +50,10 @@
                 <BeginStoryboard>
                     <Storyboard>
                         <ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Visibility">
-                            <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+                            <DiscreteObjectKeyFrame KeyTime="0:0:0.1" Value="{x:Static Visibility.Hidden}"/>
                         </ObjectAnimationUsingKeyFrames>
                         <BooleanAnimationUsingKeyFrames Storyboard.TargetProperty="IsEnabled">
-                            <DiscreteBooleanKeyFrame KeyTime="0" Value="True"/>
+                            <DiscreteBooleanKeyFrame KeyTime="0:0:0.1" Value="False"/>
                         </BooleanAnimationUsingKeyFrames>
                     </Storyboard>
                 </BeginStoryboard>
@@ -606,11 +606,11 @@
 			<StackPanel>
 				<Image Source="{Binding Image}" />
 			</StackPanel>
-			<Button.ToolTip>
+            <ToggleButton.ToolTip>
 				<StackPanel Background="#FF365264">
 					<TextBlock Text="{Binding Name}" FontSize="18" FontWeight="Bold" Foreground="#FF365264" Background="LightSkyBlue" Padding="0,2" TextAlignment="Center"/>
 				</StackPanel>
-			</Button.ToolTip>
+			</ToggleButton.ToolTip>
 		</ToggleButton>
 	</DataTemplate>
 	

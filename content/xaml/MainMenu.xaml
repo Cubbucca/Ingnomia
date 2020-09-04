@@ -89,7 +89,6 @@
 		<local:WaitPage  	x:Name="WaitPage"     Grid.Row="1" Grid.Column="1" Visibility="Hidden"/>
         <local:IngamePage  	x:Name="IngamePage"   Grid.Row="1" Grid.Column="1" Visibility="Hidden"/>
         <local:LoadingPage  x:Name="LoadingPage"  Grid.Row="1" Grid.Column="1" Visibility="Hidden"/>
-        <ProgressBar IsIndeterminate="True" Visibility="{Binding _loadingVis, FallbackValue=Collapsed}" Grid.Row="2" Grid.Column="1" Width="500" Height="20"/>
     </Grid>
 	
 </UserControl>
