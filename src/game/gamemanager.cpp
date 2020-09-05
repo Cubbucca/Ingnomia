@@ -245,6 +245,7 @@ void GameManager::createNewGame()
 void GameManager::onGeneratorMessage( QString message )
 {
 	qDebug() << message;
+	EventConnector::getInstance().signalProgress( message );
 }
 
 void GameManager::saveGame()

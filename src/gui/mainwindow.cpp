@@ -699,7 +699,6 @@ void MainWindow::registerComponents()
 
 	Noesis::RegisterComponent<IngnomiaGUI::Main>();
 	Noesis::RegisterComponent<IngnomiaGUI::ViewModel>();
-
 	Noesis::RegisterComponent<IngnomiaGUI::MainMenu>();
 	Noesis::RegisterComponent<IngnomiaGUI::MainPage>();
 	Noesis::RegisterComponent<IngnomiaGUI::SettingsPage>();

@@ -375,7 +375,12 @@ void ViewModel::OnBack( BaseComponent* )
 	}
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
+void ViewModel::OnProgress( QString progress )
+{
+	_progress = progress.toStdString().c_str();
+	OnPropertyChanged( "Progress" );
+}
+	////////////////////////////////////////////////////////////////////////////////////////////////////
 void ViewModel::OnResume( BaseComponent* )
 {
 	SetState( State::GameRunning );
@@ -397,6 +402,11 @@ void ViewModel::OnFadeInCompleted( BaseComponent* param )
 State ViewModel::GetState() const
 {
 	return _state;
+}
+
+const char* ViewModel::GetProgress() const
+{
+	return _progress.Str();
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -476,7 +486,7 @@ NS_IMPLEMENT_REFLECTION( IngnomiaGUI::ViewModel, "IngnomiaGUI.ViewModel" )
 	NsProp( "CmdGuiZoom", &ViewModel::GetGuiZoom );
 
 	NsProp( "NewGameModel", &ViewModel::getNewGameModel );
-
+	NsProp( "Progress", &ViewModel::GetProgress );
 	// New Game properties
 }
 

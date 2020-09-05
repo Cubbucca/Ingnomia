@@ -25,6 +25,7 @@ ProxyMainView::ProxyMainView( QObject* parent ) :
 {
 	connect( &EventConnector::getInstance(), &EventConnector::signalWindowSize, this, &ProxyMainView::onWindowSize, Qt::QueuedConnection );
 	connect( &EventConnector::getInstance(), &EventConnector::signalKeyEsc, this, &ProxyMainView::onKeyEsc, Qt::QueuedConnection );
+	connect( &EventConnector::getInstance(), &EventConnector::signalProgress, this, &ProxyMainView::onProgress );
 }
 
 ProxyMainView::~ProxyMainView()
@@ -49,5 +50,13 @@ void ProxyMainView::onKeyEsc()
 	if ( m_parent )
 	{
 		m_parent->OnBack( nullptr );
+	}
+}
+
+void ProxyMainView::onProgress( QString progress )
+{
+	if ( m_parent )
+	{
+		m_parent->OnProgress( progress );
 	}
 }

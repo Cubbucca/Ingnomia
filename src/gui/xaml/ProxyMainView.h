@@ -37,4 +37,5 @@ private:
 private slots:
 	void onWindowSize( int w, int h );
 	void onKeyEsc();
+	void onProgress( QString progress );
 };

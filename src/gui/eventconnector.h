@@ -125,6 +125,7 @@ public slots:
 
 signals:
 	void signalExit();
+	void signalProgress(QString progress);
 	void signalWindowSize( int w, int h );
 	void signalTimeAndDate( int minute, int hour, int day, QString season, int year, QString sunStatus );
 	void signalViewLevel( int level );

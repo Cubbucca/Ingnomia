@@ -64,6 +64,7 @@ public:
 	void setWindowSize( int w, int h );
 
 	void OnBack( BaseComponent* param );
+	void OnProgress( QString progress );
 
 private:
 	const NoesisApp::DelegateCommand* GetStart() const;
@@ -104,6 +105,7 @@ private:
 	void OnGuiZoom( BaseComponent* params );
 
 	State GetState() const;
+	const char* GetProgress() const;
 	void SetState( State value );
 	Noesis::Visibility _loadingVis;
 
@@ -127,6 +129,7 @@ private:
 	NoesisApp::DelegateCommand _guiZoom;
 
 	State _state;
+	Noesis::String _progress;
 	NewGameModel _newGameModel;
 
 	bool _showMainMenu;
