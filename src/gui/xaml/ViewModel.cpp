@@ -377,8 +377,13 @@ void ViewModel::OnBack( BaseComponent* )
 
 void ViewModel::OnProgress( QString progress )
 {
-	_progress = progress.toStdString().c_str();
-	OnPropertyChanged( "Progress" );
+	Noesis::String value = progress.toStdString().c_str();
+	if ( _progress != value )
+	{
+		_progress = value;
+		OnPropertyChanged( "Progress" );
+		QCoreApplication::processEvents();
+	}
 }
 	////////////////////////////////////////////////////////////////////////////////////////////////////
 void ViewModel::OnResume( BaseComponent* )
@@ -418,6 +423,7 @@ void ViewModel::SetState( State value )
 		OnPropertyChanged( "State" );
 		_loadingVis = ( value == State::Loading ) ? Noesis::Visibility_Visible : Noesis::Visibility_Collapsed;
 		OnPropertyChanged( "_loadingVis" );
+		QCoreApplication::processEvents();
 	}
 }
 

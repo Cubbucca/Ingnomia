@@ -30,6 +30,7 @@
 		<Grid.RowDefinitions>
 			<RowDefinition Height="2*"/>
 			<RowDefinition Height="9*"/>
+            <RowDefinition Height="3*"/>
 			<RowDefinition Height="1*"/>
 		</Grid.RowDefinitions>
 		<Grid.ColumnDefinitions>
@@ -39,13 +40,12 @@
 		</Grid.ColumnDefinitions>
 		
 		<TextBlock Grid.Row="0" Grid.Column="1" FontSize="100" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Creating Game" />
-		
-		<Viewbox Grid.Row="1" Grid.Column="1">
-            <StackPanel>
-				<TextBlock FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Please Wait" />
-				<TextBlock FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Progress}" />
-            </StackPanel>
+
+        <Viewbox Grid.Row="1" Grid.Column="1">
+            <TextBlock FontSize="20" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Please Wait" />
         </Viewbox>
-	</Grid>
+
+        <Label Grid.Row="2" Grid.Column="1" FontSize="45" HorizontalAlignment="Center"  VerticalAlignment="Center" Content="{Binding Progress}" Width="1980" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+    </Grid>
 
 </UserControl>

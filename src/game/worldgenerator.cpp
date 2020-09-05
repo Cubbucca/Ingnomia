@@ -55,7 +55,7 @@ void WorldGenerator::generate()
 	Global::dimY = NewGameSettings::getInstance().worldSize();
 	Global::dimZ = NewGameSettings::getInstance().zLevels();
 
-	qDebug() << "creating world with size" << m_dimX << m_dimY << m_dimZ;
+	emit signalStatus( "Creating world with size " + QString::number(m_dimX) + "x" + QString::number(m_dimY) + "x" + QString::number(m_dimZ) );
 
 	m_groundLevel = NewGameSettings::getInstance().ground();
 	m_fow         = Config::getInstance().get( "fow" ).toBool();
@@ -83,12 +83,10 @@ void WorldGenerator::generate()
 	m_random.SetNoiseType( FastNoise::NoiseType::CubicFractal );
 	m_random.SetFractalType( FastNoise::FractalType::Billow );
 
-	emit signalStatus( "Create height map." );
 	createHeightMap( m_dimX, m_dimY );
 	initMateralVectors();
 
 	// resize world and fill stone layers
-	emit signalStatus( "Set stone layers." );
 	setStoneLayers();
 
 	if ( NewGameSettings::getInstance().rivers() > 0 )
@@ -98,22 +96,17 @@ void WorldGenerator::generate()
 
 	if ( NewGameSettings::getInstance().oceanSize() > 0 )
 	{
-		emit signalStatus( "Create ocean front." );
 		createOceanFront();
 	}
 
 	// set metal ores and gems
-	emit signalStatus( "Create ore and gem veins." );
 	setMetalsAndGems();
 	// set water and sand floor at water
-	emit signalStatus( "Set water." );
 	setWater();
 
 	// set sunlight and grass
-	emit signalStatus( "Init sun light." );
 	initSunLight();
 
-	emit signalStatus( "Create ramps." );
 	createRamps();
 
 	if ( !NewGameSettings::getInstance().isPeaceful() )
@@ -128,7 +121,6 @@ void WorldGenerator::generate()
 	discoverAll();
 
 	// add plants and trees
-	emit signalStatus( "Add plants and trees." );
 	addPlantsAndTrees();
 	// add animals
 	emit signalStatus( "Add animals." );
@@ -141,7 +133,7 @@ void WorldGenerator::generate()
 
 	GameState::kingdomName = NewGameSettings::getInstance().kingdomName();
 
-	qDebug() << "world generator done";
+	emit signalStatus( "World Gen Completed." );
 }
 
 void WorldGenerator::initMateralVectors()
@@ -184,34 +176,27 @@ void WorldGenerator::initMateralVectors()
 
 void WorldGenerator::setStoneLayers()
 {
-	QElapsedTimer timer;
-	timer.start();
+	emit signalStatus( "Laying Stones... 0%" );
 	for ( int z = 0; z < m_dimZ; ++z )
 	{
-		if ( timer.elapsed() > 3000 )
-		{
-			emit signalStatus( "Set stone layers..." + QString::number( (int)( ( 100. / (float)m_dimZ ) * z ) ) + "%" );
-			timer.restart();
-		}
+		emit signalStatus( "Laying Stones... " + QString::number( (int)( ( 100. / (float)m_dimZ ) * z ) ) + "%" );
 		fillFloor( z, m_mats, m_matsInLevel );
 		QCoreApplication::processEvents();
 	}
-
+	emit signalStatus( "Laying Stones... 100%");
 	for ( int z = 0; z < 7; ++z )
 	{
-		if ( timer.elapsed() > 3000 )
-		{
-			emit signalStatus( "Set stone layers..." + QString::number( (int)( ( 100. / (float)m_dimZ ) * z ) ) + "%" );
-			timer.restart();
-		}
+		emit signalStatus( "Growing Mushroom Biome... " + QString::number( (int)( ( 100. / (float)7 ) * z ) ) + "%" );
 		fillFloorMushroomBiome( z, m_mats, m_matsInLevel );
 		QCoreApplication::processEvents();
 	}
+	emit signalStatus( "Growing Mushroom Biome... 100%" );
 }
 
 // set metal ores and gems
 void WorldGenerator::setMetalsAndGems()
 {
+	emit signalStatus( "Detecting Ore and Gem Vein's... 0%" );
 	QMap<QString, EmbeddedMaterial> embeddeds;
 	QList<QString> eids = DB::ids( "EmbeddedMaterials" );
 
@@ -254,15 +239,19 @@ void WorldGenerator::setMetalsAndGems()
 				}
 			}
 		}
+		emit signalStatus( "Detecting Ore and Gem Vein's... " + QString::number( (int)( ( 100. / (float)m_groundLevel ) * z ) ) + "%" );
 	}
 }
 // set water and sand floor at water
 void WorldGenerator::setWater()
 {
+	emit signalStatus( "Wa' Tar'" );
 }
 // set sunlight and grass
 void WorldGenerator::initSunLight()
 {
+
+	emit signalStatus( "Rising Sun... 0%" );
 	auto& world       = Global::w().world();
 	SpriteFactory& sf = Global::sf();
 
@@ -300,13 +289,16 @@ void WorldGenerator::initSunLight()
 				Global::w().createGrass( pos );
 			}
 		}
+		emit signalStatus( "Rising Sun... " + QString::number( (int)( ( 100. / (float)m_dimY ) * y ) ) + "%" );
 	}
 
 	Global::w().initGrassUpdateList();
+	emit signalStatus( "Rising Sun... 100%" );
 }
 // add plants and trees
 void WorldGenerator::addPlantsAndTrees()
 {
+	emit signalStatus( "Growing Trees and Plants... 0%");
 	QStringList allTrees     = DB::ids( "Plants", "Type", "Tree" );
 	QStringList allMushrooms = DB::ids( "Plants", "Type", "Mushroom" );
 	QStringList largeShrooms;
@@ -322,6 +314,7 @@ void WorldGenerator::addPlantsAndTrees()
 		{
 			smallShrooms.append( shroom );
 		}
+		emit signalStatus( "Shrooms... " + QString::number( (int)( ( 100. / (float)allMushrooms.size() ) * allMushrooms.indexOf(shroom) )) + "%" );
 	}
 
 	QStringList trees;
@@ -332,6 +325,7 @@ void WorldGenerator::addPlantsAndTrees()
 		{
 			trees.push_back( tree );
 		}
+		emit signalStatus( "Trees... " + QString::number( (int)( ( 100. / (float)allTrees.size() ) * allTrees.indexOf( tree ) ) ) + "%" );
 	}
 
 	QStringList allplants = DB::ids( "Plants", "Type", "Plant" );
@@ -342,6 +336,7 @@ void WorldGenerator::addPlantsAndTrees()
 		{
 			plants.push_back( plant );
 		}
+		emit signalStatus( "Wild Plants... " + QString::number( (int)( ( 100. / (float)allplants.size() ) * allplants.indexOf( plant ) ) ) + "%" );
 	}
 
 	int x = m_dimX / 2;
@@ -378,6 +373,7 @@ void WorldGenerator::addPlantsAndTrees()
 					}
 				}
 			}
+			emit signalStatus( "Planting Mushys... " + QString::number( (int)( ( 100. / (float)m_dimX ) * x_ ) ) + "%" );
 		}
 		for ( int x_ = 3; x_ < m_dimX - 4; ++x_ )
 		{
@@ -401,6 +397,7 @@ void WorldGenerator::addPlantsAndTrees()
 					}
 				}
 			}
+			emit signalStatus( "Planting Underground Mushys... " + QString::number( (int)( ( 100. / (float)m_dimX ) * x_ ) ) + "%" );
 		}
 	}
 
@@ -441,6 +438,7 @@ void WorldGenerator::addPlantsAndTrees()
 					}
 				}
 			}
+			emit signalStatus( "Planting Trees... " + QString::number( (int)( ( 100. / (float)m_dimX ) * x_ ) ) + "%" );
 		}
 	}
 	if ( plantDensity > 0 )
@@ -472,12 +470,14 @@ void WorldGenerator::addPlantsAndTrees()
 					}
 				}
 			}
+			emit signalStatus( "Planting Wild Plants... " + QString::number( (int)( ( 100. / (float)m_dimX ) * x_ ) ) + "%" );
 		}
 	}
 }
 // add animals
 void WorldGenerator::addAnimals()
 {
+	emit signalStatus( "Releasing Wild Animals... 0%");
 	int numAnimals = NewGameSettings::getInstance().numWildAnimals();
 	QStringList keys;
 	QStringList waterKeys;
@@ -595,6 +595,7 @@ void WorldGenerator::addAnimals()
 				}
 			}
 		}
+		emit signalStatus( "Releasing Wild Animals... " + QString::number( (int)( ( 100. / (float)m_dimX ) * x_ ) ) + "%" );
 	}
 	/*
 	for( int i = 0; i < 35000; ++i )
@@ -798,6 +799,8 @@ QString WorldGenerator::getRandomMaterial( QString itemSID )
 // heightmap values = -1 to 1
 void WorldGenerator::createHeightMap( int dimX, int dimY )
 {
+	emit signalStatus( "Building Height Map... 0%" );
+
 	m_heightMap.resize( dimX * dimY * 4 );
 	m_heightMap2.resize( dimX * dimY * 4 );
 
@@ -813,7 +816,9 @@ void WorldGenerator::createHeightMap( int dimX, int dimY )
 			m_heightMap[x + y * dimX]  = value * flatness;
 			m_heightMap2[x + y * dimX] = value;
 		}
+		emit signalStatus( "Building Height Map... " + QString::number( (int)( ( 100. / (dimX*2) ) * x ) ) + "%" );
 	}
+	emit signalStatus( "Building Height Map... 100%" );
 	//qDebug() << "heightMap min: " << m_min << "heightMap max: " << m_max;
 }
 
@@ -988,6 +993,7 @@ void WorldGenerator::fillFloor( int z, QVector<TerrainMaterial>& mats, QVector<i
 
 void WorldGenerator::discoverAll()
 {
+	emit signalStatus( "Discovering... 0%");
 	for ( int z = m_dimZ - 2; z > 0; --z )
 	{
 		for ( int y = 1; y < m_dimY - 1; ++y )
@@ -1000,14 +1006,19 @@ void WorldGenerator::discoverAll()
 				}
 			}
 		}
+		emit signalStatus( "Discovering... " + QString::number( (int)( 100-( 100. / (float)m_dimZ ) * z ) ) + "%" );
 	}
 }
 
 void WorldGenerator::createRamps()
 {
+
+	emit signalStatus( "Creating Ramps... 0%" );
 	for ( int z = m_dimZ - 2; z > 0; --z )
 	{
 		createRamp( z );
+		emit signalStatus( "Creating Ramps... " + QString::number( (int)( ( 100 - (100. / (float)m_dimZ ) * z) ) ) + "%" );
+		QCoreApplication::processEvents();
 	}
 }
 
@@ -1196,6 +1207,7 @@ QString WorldGenerator::getRandomEmbedded( int x, int y, int z, QMap<QString, Em
 
 void WorldGenerator::createOceanFront()
 {
+	emit signalStatus( "Create Ocean Front... 0%" );
 	srand( std::chrono::system_clock::now().time_since_epoch().count() );
 
 	auto& world = Global::w().world();
@@ -1232,6 +1244,7 @@ void WorldGenerator::createOceanFront()
 					decreaseHeight( x, y, qMin( 10, ySize - i ) );
 					setSandFloor( x, y, sandRowID );
 				}
+				emit signalStatus( "Create Ocean Front Floor... " + QString::number( (int)( ( 100. / (float)m_dimY ) * y ) ) + "%" );
 			}
 
 			int z = 99; //getLowestZonXLine( xStart + size );
@@ -1244,6 +1257,7 @@ void WorldGenerator::createOceanFront()
 					int x = xStart + i;
 					fillWater( x, y, z );
 				}
+				emit signalStatus( "Create Ocean Front Water... " + QString::number( (int)( ( 100. / (float)m_dimY ) * y ) ) + "%" );
 			}
 			break;
 		}
@@ -1258,6 +1272,7 @@ void WorldGenerator::createOceanFront()
 					decreaseHeight( x, y, qMin( 10, size - i ) );
 					setSandFloor( x, y, sandRowID );
 				}
+				emit signalStatus( "Create Ocean Front Floor... " + QString::number( (int)( ( 100. / (float)m_dimX ) * x ) ) + "%" );
 			}
 			int z = 99; //getLowestZonYLine( yStart + size );
 
@@ -1269,6 +1284,7 @@ void WorldGenerator::createOceanFront()
 					int y = yStart + i;
 					fillWater( x, y, z );
 				}
+				emit signalStatus( "Create Ocean Front Water... " + QString::number( (int)( ( 100. / (float)m_dimX ) * x ) ) + "%" );
 			}
 			break;
 		}
@@ -1283,6 +1299,7 @@ void WorldGenerator::createOceanFront()
 					decreaseHeight( x, y, qMin( 10, size - i ) );
 					setSandFloor( x, y, sandRowID );
 				}
+				emit signalStatus( "Create Ocean Front Floor... " + QString::number( (int)( ( 100. / (float)m_dimY ) * y ) ) + "%" );
 			}
 			int z = 99; // getLowestZonXLine( maxX - size );
 
@@ -1294,6 +1311,7 @@ void WorldGenerator::createOceanFront()
 					int x = maxX - i;
 					fillWater( x, y, z );
 				}
+				emit signalStatus( "Create Ocean Front Water... " + QString::number( (int)( ( 100. / (float)m_dimY ) * y ) ) + "%" );
 			}
 			break;
 		}
@@ -1309,6 +1327,7 @@ void WorldGenerator::createOceanFront()
 					decreaseHeight( x, y, qMin( 10, size - i ) );
 					setSandFloor( x, y, sandRowID );
 				}
+				emit signalStatus( "Create Ocean Front Floor... " + QString::number( (int)( ( 100. / (float)m_dimX ) * x ) ) + "%" );
 			}
 			int z = 99; //getLowestZonYLine( maxY - size );
 
@@ -1320,6 +1339,7 @@ void WorldGenerator::createOceanFront()
 					int y = maxY - i;
 					fillWater( x, y, z );
 				}
+				emit signalStatus( "Create Ocean Front Water... " + QString::number( (int)( ( 100. / (float)m_dimX ) * x ) ) + "%" );
 			}
 			break;
 		}
@@ -1423,6 +1443,7 @@ void WorldGenerator::fillWater( int x, int y, int z )
 
 void WorldGenerator::createRivers()
 {
+	emit signalStatus( "Carving Rivers... 0%" );
 	QList<std::vector<Position>> worms;
 	auto& world = Global::w().world();
 
@@ -1482,6 +1503,7 @@ void WorldGenerator::createRivers()
 		{
 			auto pos = worm[i];
 			carveRiver( world, pos );
+			emit signalStatus( "Carving Rivers... " + QString::number( (int)( ( 100. / worm.size() ) * i ) ) + "%" );
 		}
 
 		if ( worm.size() > 1 )
@@ -1492,6 +1514,7 @@ void WorldGenerator::createRivers()
 			Global::w().addDeaquifier( dpos.belowOf() );
 		}
 	}
+	emit signalStatus( "Carving Rivers... 100%" );
 }
 
 std::vector<Position> WorldGenerator::riverWorm( Position pos, int dir, int num, int maxLength )
